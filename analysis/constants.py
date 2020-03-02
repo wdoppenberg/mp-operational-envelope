@@ -1,0 +1,10 @@
+h = 2256e3      #J/kg
+c_l = 4187      #J/K/kg liquid water 
+c_v = 1996      #J/K/kg water vapour
+T_0 = 283       #K
+A = 4.5e-9      #m^2 
+Gamma = 0.6712
+R = 461.67
+rho = 997       #kg/m^3
+l = 0.30        #m
+d = 1.57e-3     #m
