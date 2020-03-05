@@ -1,6 +1,6 @@
-from analysis import constants as c, functions as f, components as comp
+from analysis import constants as c, functions as f, components as cmp
 
-prop = comp.Propellant(
+prop = cmp.Propellant(
     c.h,
     c.c_l,
     c.c_v,
@@ -9,17 +9,17 @@ prop = comp.Propellant(
     c.Gamma
 )
 
-th = comp.Thruster(
+th = cmp.Thruster(
     c.A_t
 )
 
-env = comp.Environment(
+env = cmp.Environment(
     c.T_0,
     c.l,
     c.d
 )
 
-op = comp.OperationalEnvelope(
+op = cmp.OperationalEnvelope(
     th,
     prop,
     env
