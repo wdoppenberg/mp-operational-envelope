@@ -3,7 +3,7 @@ import numpy as np
 # Time & timestep
 dt = 0.1        #s
 t_end = 2500    #s
-t = np.arange(0, t_end, dt)
+t = np.arange(0, t_end, dt, dtype='f')
 
 # Propellant properties
 h = 2256e3      #J/kg
@@ -18,7 +18,8 @@ h_vap = 40e3
 R_vap = 8.341
 
 # Geometric & environmental properties
-A_t = 4.5e-9      #m^2 
+A_t = 4.5e-9    #m^2 
 l = 0.30        #m
 d = 1.57e-3     #m
 T_0 = 283       #K
+V_tube = (l*np.pi*(d**2))/4

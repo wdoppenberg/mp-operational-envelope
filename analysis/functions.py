@@ -8,5 +8,12 @@ def mdot(p, A_t, Gamma, R, T_c):
 
     Accepts type `np.array` for `p` and `T_c`
     """
-    return np.divide(p*A_t*Gamma, np.sqrt(R*T_c))
+    
+    return (p*A_t*Gamma) / np.sqrt(R*T_c)
 
+
+def p_t(V_0, p_0, m_exit_t, rho):
+    """
+    Pressure vs time function.
+    """
+    return (V_0 * p_0) / (V_0 + (m_exit_t/rho))

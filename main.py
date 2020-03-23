@@ -25,4 +25,5 @@ op = cmp.OperationalEnvelope(
     env
 )
 
-print(op)
+if __name__ == "__main__":
+    pass
