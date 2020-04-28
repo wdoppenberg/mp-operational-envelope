@@ -17,6 +17,9 @@ T_vap0 = 373
 h_vap = 40e3
 R_vap = 8.341
 
+# Input power
+Q = 1
+
 # Geometric & environmental properties
 A_t = 4.5e-9    #m^2 
 l = 0.30        #m
