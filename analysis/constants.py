@@ -1,8 +1,8 @@
 import numpy as np
 
 # Time & timestep
-dt = 0.1        #s
-t_end = 2500    #s
+dt = 0.001      #s
+t_end = 1200    #s
 t = np.arange(0, t_end, dt, dtype='f')
 
 # Propellant properties
