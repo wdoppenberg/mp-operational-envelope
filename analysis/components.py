@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 from dataclasses import dataclass
+from .functions import vdkh
 
 class OperationalEnvelope:
     def __init__(self, kwargs):
@@ -24,8 +25,7 @@ class OperationalEnvelope:
 
     @property
     def Gamma(self):
-        g = self.gamma
-        return np.sqrt(g) * ((2/(g+1)) ** ((g+1)/(2*(g-1))))
+        return vdkh(self.gamma)
 
     def __repr__(self):
         return repr(self.df)

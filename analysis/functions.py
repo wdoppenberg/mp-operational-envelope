@@ -46,7 +46,7 @@ def C_F_divloss(CA, C_F0, p_e, p_a, p_c, AR):
     return CA*C_F0 + (p_e/p_a - p_a/p_c)*AR
 
 
-def C_F_vis(AR, Re):
+def C_F_visc(AR, Re):
     """
     Viscous loss
     """
