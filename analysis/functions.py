@@ -17,3 +17,10 @@ def p_t(V_0, p_0, m_exit_t, rho):
     Pressure vs time function.
     """
     return (V_0 * p_0) / (V_0 + (m_exit_t/rho))
+
+
+def vdkh(g):
+    """
+    Vanderkerckhoven function
+    """
+    return np.sqrt(g) * ((2/(g+1)) ** ((g+1)/(2*(g-1))))
