@@ -5,8 +5,6 @@ import matplotlib.pyplot as plt
 from dataclasses import dataclass
 from .functions import vdkh
 
-ex = lambda x, p: x in p
-
 class OperationalEnvelope:
     def __init__(self, params):
 
@@ -73,6 +71,43 @@ class OperationalEnvelope:
 
         self.F_T = self.mdot*self.I_sp*9.81
 
+    def plot(self):
+        plt.style.use('ggplot')
+
+        fig, ax = plt.subplots(6, 1, figsize=(10,10), sharex=True)
+        ax[0].plot(self.t, self.p)
+        ax[0].set_ylabel('Nitrogen\npressure [Pa]')
+        ax[0].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+        print(f'Nitrogen pressure \t[{min(self.p):.2e}, {max(self.p):.2e}] Pa')
+
+        ax[1].plot(self.t, self.mdot)
+        ax[1].set_ylabel('Mass\nflow [kg/s]')
+        ax[1].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+        print(f'Mass flow \t\t[{min(self.mdot):.2e}, {max(self.mdot):.2e}] kg/s')
+
+        ax[2].plot(self.t, self.F_T)
+        ax[2].set_ylabel('Thrust [N]')
+        ax[2].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+        print(f'Thrust \t\t\t[{min(self.F_T):.2e}, {max(self.F_T):.2e}] N')
+
+        ax[3].plot(self.t, self.T_c)
+        ax[3].set_ylabel('Chamber\ntemperature [K]')
+        ax[3].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+        print(f'Chamber temperature \t[{min(self.T_c):.2e}, {max(self.T_c):.2e}] K')
+
+        ax[4].plot(self.t, self.m)
+        ax[4].set_ylabel('Propellant\nmass [kg]')
+        ax[4].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+        print(f'Propellant mass \t[{min(self.m):.2e}, {max(self.m):.2e}] kg')
+
+        ax[5].plot(self.t, self.Q)
+        ax[5].set_ylabel('Required\npower [W]')
+        ax[5].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+        ax[5].set_xlabel('Time [s]')
+        print(f'Required power \t\t[{min(self.Q):.2e}, {max(self.Q):.2e}] W')
+        print(f'Input power \t\t[{min(self.Q/self.eff_Q):.2e}, {max(self.Q/self.eff_Q):.2e}] W')
+
+        return fig
 
     def __repr__(self):
         s = 'OperationalEnvelope(\n'
