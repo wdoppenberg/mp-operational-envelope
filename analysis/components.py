@@ -44,3 +44,4 @@ class OperationalEnvelope:
         s = ''
         for k, v in vars(self).items():
             s+=f"{k}\t\t\t{v}\n"
+        return s
