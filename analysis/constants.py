@@ -1,6 +1,8 @@
 import numpy as np
 from dataclasses import dataclass
 
+from .functions import vdkh
+
 # Propellant properties - water
 @dataclass
 class Water:
@@ -14,3 +16,4 @@ class Water:
     T_vap0 = 373
     h_vap = 40e3
     R_vap = 8.341
+    Gamma = vdkh(1.33)

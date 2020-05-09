@@ -16,13 +16,20 @@ class OperationalEnvelope:
         self.d_tube = params['d_tube'] # Propellant tubing diameter
         self.V_tube = (self.l_tube*np.pi*(self.d_tube**2))/4 # Propellant tubing volume
         self.eff_Q = params['eff_Q'] # Heating efficiency 
+        self.T_0 = params['T_0']
         
         # Propellant properties
         self.p = params['propellant']
 
+        # Quality factors
+        self.C_d = params['C_d'] # Discharge coefficient
+        self.xi_s = params['xi_s'] # I_sp quality  
+        self.I_sp = params['I_sp']*self.xi_s # Specific impulse
+
         # Input parameters
         self.p_0 = params['p_0']
         self.V_fraction = params['V_fraction']
+        self.V_0 = self.V_tube*self.V_fraction
         
         if 'Tc_0' in params:
             self.Tc_0 = params['Tc_0']
@@ -32,16 +39,44 @@ class OperationalEnvelope:
                     *np.log(self.p.p_vap0/self.p_0)\
                     +self.p.h_vap)
 
-        # Quality factors
-        self.C_d = params['C_d'] # Discharge coefficient
-        self.xi_s = params['xi_s'] # I_sp quality        
+        self.mdot_0 = self.p_0*self.A_t*self.p.Gamma\
+            /(np.sqrt(self.p.R_constant*self.T_c0))*self.C_d
 
-    @property
-    def Gamma(self):
-        return vdkh(self.p.gamma)
+    def simulate(self, dt, t_end, dim=None):
+        self.t = np.arange(0, t_end, dt, dtype='f')
+        if dim is None:
+            dim = len(self.t)
+
+        self.mdot = np.zeros(dim)
+        self.p = np.zeros(dim)
+        self.T_c = np.zeros(dim)
+
+        self.mdot[0] = self.mdot_0
+        self.p[0] = self.p_0
+        self.T_c[0] = self.T_c0
+        temp = 0
+
+        for ii, _ in enumerate(self.t[1:], 1):
+            self.p[ii] = self.V_0*self.p_0/(self.V_0+temp)
+            self.mdot[ii] = ((self.p[ii-1]*self.A_t*self.p.Gamma)\
+                /np.sqrt(self.p.R_constant*self.T_c[ii-1]))*self.C_d
+            self.T_c[ii] = self.p.h_vap*self.p.T_vap0\
+                /(self.p.T_vap0*self.p.R_vap*np.log(self.p.p_vap0\
+                /self.p[ii-1])+self.p.h_vap)
+            temp = temp+self.mdot[ii-1]*dt/self.p.rho
+
+        self.T_vap = self.p.h_vap*self.p.T_vap0\
+            /(self.p.T_vap0*self.p.R_vap*np.log(self.p.p_vap0/self.p)+self.p.h_vap)
+        self.Q = self.mdot * (self.T_c-self.T_0)*self.p.c_l + self.p.h*self.mdot
+        self.V_t = self.V_0 * (self.p_0 / self.p)
+        self.m = (self.V_tube - self.V_t) * self.p.rho
+
+        self.F_T = self.mdot*self.I_sp*9.81
+
 
     def __repr__(self):
-        s = ''
+        s = 'OperationalEnvelope(\n'
         for k, v in vars(self).items():
-            s+=f"{k}\t\t\t{v}\n"
+            s+=f"{k}\t\t\t{v:.4e}\n"
+        s += ')'
         return s
