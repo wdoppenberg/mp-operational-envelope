@@ -71,7 +71,7 @@ class OperationalEnvelope:
 
         self.F_T = self.mdot*self.I_sp*9.81
 
-    def plot(self):
+    def plot(self, fig=None):
         plt.style.use('ggplot')
 
         fig, ax = plt.subplots(6, 1, figsize=(10,10), sharex=True)
@@ -107,11 +107,9 @@ class OperationalEnvelope:
         print(f'Required power \t\t[{min(self.Q):.2e}, {max(self.Q):.2e}] W')
         print(f'Input power \t\t[{min(self.Q/self.eff_Q):.2e}, {max(self.Q/self.eff_Q):.2e}] W')
 
-        return fig
-
     def __repr__(self):
         s = 'OperationalEnvelope(\n'
         for k, v in vars(self).items():
-            s+=f"{k}\t\t\t{v:.4e}\n"
+            s+=f"{k}\t\t\t{v}\n"
         s += ')'
         return s
