@@ -41,5 +41,6 @@ class OperationalEnvelope:
         return vdkh(self.p.gamma)
 
     def __repr__(self):
+        s = ''
         for k, v in vars(self).items():
-            print(f"{k}\t\t\t{v}")
+            s+=f"{k}\t\t\t{v}\n"
