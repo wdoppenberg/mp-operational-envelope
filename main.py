@@ -1,4 +1,5 @@
-from analysis import constants as c, functions as f, components as cmp
+from analysis import constants as c, functions as f, OperationalEnvelope
+import matplotlib.pyplot as plt
 
 input_vars = dict(
     A_t=4.5e-9,
@@ -8,11 +9,13 @@ input_vars = dict(
     I_sp = 74,
     eff_Q=0.6,
     propellant=c.Water,
-    p_0=1.1e5,
+    p_0=2e5,
     V_fraction=0.12,
     C_d=0.66,
     xi_s=0.2
 )
 
-oe = cmp.OperationalEnvelope(input_vars)
+oe = OperationalEnvelope(input_vars)
 
+oe.simulate(0.1, 1200)
+oe.describe()
