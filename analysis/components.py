@@ -19,7 +19,7 @@ class OperationalEnvelope:
         self.T_0 = params['T_0']
         
         # Propellant properties
-        self.p = params['propellant']
+        self.prop = params['propellant']
 
         # Quality factors
         self.C_d = params['C_d'] # Discharge coefficient
@@ -34,13 +34,13 @@ class OperationalEnvelope:
         if 'Tc_0' in params:
             self.Tc_0 = params['Tc_0']
         else:
-            self.T_c0 = self.p.h_vap*self.p.T_vap0\
-                    /(self.p.T_vap0*self.p.R_vap\
-                    *np.log(self.p.p_vap0/self.p_0)\
-                    +self.p.h_vap)
+            self.T_c0 = self.prop.h_vap*self.prop.T_vap0\
+                    /(self.prop.T_vap0*self.prop.R_vap\
+                    *np.log(self.prop.p_vap0/self.p_0)\
+                    +self.prop.h_vap)
 
-        self.mdot_0 = self.p_0*self.A_t*self.p.Gamma\
-            /(np.sqrt(self.p.R_constant*self.T_c0))*self.C_d
+        self.mdot_0 = self.p_0*self.A_t*self.prop.Gamma\
+            /(np.sqrt(self.prop.R_constant*self.T_c0))*self.C_d
 
     def simulate(self, dt, t_end, dim=None):
         self.t = np.arange(0, t_end, dt, dtype='f')
@@ -58,18 +58,18 @@ class OperationalEnvelope:
 
         for ii, _ in enumerate(self.t[1:], 1):
             self.p[ii] = self.V_0*self.p_0/(self.V_0+temp)
-            self.mdot[ii] = ((self.p[ii-1]*self.A_t*self.p.Gamma)\
-                /np.sqrt(self.p.R_constant*self.T_c[ii-1]))*self.C_d
-            self.T_c[ii] = self.p.h_vap*self.p.T_vap0\
-                /(self.p.T_vap0*self.p.R_vap*np.log(self.p.p_vap0\
-                /self.p[ii-1])+self.p.h_vap)
-            temp = temp+self.mdot[ii-1]*dt/self.p.rho
+            self.mdot[ii] = ((self.p[ii-1]*self.A_t*self.prop.Gamma)\
+                /np.sqrt(self.prop.R_constant*self.T_c[ii-1]))*self.C_d
+            self.T_c[ii] = self.prop.h_vap*self.prop.T_vap0\
+                /(self.prop.T_vap0*self.prop.R_vap*np.log(self.prop.p_vap0\
+                /self.p[ii-1])+self.prop.h_vap)
+            temp = temp+self.mdot[ii-1]*dt/self.prop.rho
 
-        self.T_vap = self.p.h_vap*self.p.T_vap0\
-            /(self.p.T_vap0*self.p.R_vap*np.log(self.p.p_vap0/self.p)+self.p.h_vap)
-        self.Q = self.mdot * (self.T_c-self.T_0)*self.p.c_l + self.p.h*self.mdot
+        self.T_vap = self.prop.h_vap*self.prop.T_vap0\
+            /(self.prop.T_vap0*self.prop.R_vap*np.log(self.prop.p_vap0/self.p)+self.prop.h_vap)
+        self.Q = self.mdot * (self.T_c-self.T_0)*self.prop.c_l + self.prop.h*self.mdot
         self.V_t = self.V_0 * (self.p_0 / self.p)
-        self.m = (self.V_tube - self.V_t) * self.p.rho
+        self.m = (self.V_tube - self.V_t) * self.prop.rho
 
         self.F_T = self.mdot*self.I_sp*9.81
 
