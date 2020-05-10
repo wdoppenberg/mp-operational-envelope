@@ -22,7 +22,6 @@ class OperationalEnvelope:
         # Quality factors
         self.C_d = params['C_d'] # Discharge coefficient
         self.xi_s = params['xi_s'] # I_sp quality  
-        self.I_sp = 74*self.xi_s # Specific impulse
 
         # Input parameters
         self.p_0 = params['p_0']
@@ -74,7 +73,8 @@ class OperationalEnvelope:
         self.V_t = self.V_0 * (self.p_0 / self.p)
         self.m = (self.V_tube - self.V_t) * self.prop.rho
 
-        self.F_T = self.mdot*self.I_sp*9.81
+        self.I_sp = np.sqrt(np.mean(self.T_c)/500)*95
+        self.F_T = self.mdot*self.I_sp*self.xi_s*9.81
 
     def describe(self):
         print(f'''
@@ -111,7 +111,7 @@ class OperationalEnvelope:
         ax[4].set_ylabel('Propellant\nmass [kg]')
         ax[4].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
 
-        ax[5].plot(self.t, self.Q)
+        ax[5].plot(self.t, self.Q/self.eff_Q)
         ax[5].set_ylabel('Required\npower [W]')
         ax[5].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
         ax[5].set_xlabel('Time [s]')
@@ -175,7 +175,7 @@ class Experiment:
             ax[4].set_ylabel('Propellant\nmass [kg]')
             ax[4].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
 
-            ax[5].plot(oe.t, oe.Q, label=str(oe.name))
+            ax[5].plot(oe.t, oe.Q/oe.eff_Q, label=str(oe.name))
             ax[5].set_ylabel('Required\npower [W]')
             ax[5].set_xlabel('Time [s]')
         

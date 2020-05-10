@@ -25,8 +25,8 @@ input_vars3 = dict(
     l_tube=0.3,
     d_tube=1.57e-3,
     propellant=c.Water,
-    p_0=1.1e5,
-    V_fraction=0.2,
+    p_0=1.5e5,
+    V_fraction=0.3,
     C_d=0.66,
     xi_s=0.6
 )
