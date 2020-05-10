@@ -35,9 +35,9 @@ oe1 = OperationalEnvelope(input_vars1, name='oe1')
 oe2 = OperationalEnvelope(input_vars2, name='oe2')
 oe3 = OperationalEnvelope(input_vars3, name='oe3')
 
-dt, t_end = 0.1, 1200
+dt, t_end = 0.1, 800
 ex = Experiment(oe1, oe2, oe3)
 
+ex.verification(dt, t_end)
 ex.comparison(dt, t_end)
-
 plt.show()

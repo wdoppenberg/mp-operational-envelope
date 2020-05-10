@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
+from itertools import combinations
 from dataclasses import dataclass
 from .functions import vdkh
 
@@ -79,13 +79,13 @@ class OperationalEnvelope:
 
     def describe(self):
         print(f'''
-        Nitrogen pressure \t[{min(self.p):.2e}, {max(self.p):.2e}] Pa
-        Mass flow \t\t[{min(self.mdot):.2e}, {max(self.mdot):.2e}] kg/s
-        Thrust \t\t\t[{min(self.F_T):.2e}, {max(self.F_T):.2e}] N
-        Chamber temperature \t[{min(self.T_c):.2e}, {max(self.T_c):.2e}] K
-        Propellant mass \t[{min(self.m):.2e}, {max(self.m):.2e}] kg
-        Required power \t\t[{min(self.Q):.2e}, {max(self.Q):.2e}] W
-        Input power \t\t[{min(self.Q/self.eff_Q):.2e}, {max(self.Q/self.eff_Q):.2e}] W
+            Nitrogen pressure \t[{min(self.p):.2e}, {max(self.p):.2e}] Pa
+            Mass flow \t\t[{min(self.mdot):.2e}, {max(self.mdot):.2e}] kg/s
+            Thrust \t\t\t[{min(self.F_T):.2e}, {max(self.F_T):.2e}] N
+            Chamber temperature \t[{min(self.T_c):.2e}, {max(self.T_c):.2e}] K
+            Propellant mass \t[{min(self.m):.2e}, {max(self.m):.2e}] kg
+            Required power \t\t[{min(self.Q):.2e}, {max(self.Q):.2e}] W
+            Input power \t\t[{min(self.Q/self.eff_Q):.2e}, {max(self.Q/self.eff_Q):.2e}] W
         ''')
 
     def plot(self, return_fig=False):
@@ -120,6 +120,20 @@ class OperationalEnvelope:
         if return_fig:
             return fig
 
+    def verify(self):
+        requirements = dict(
+            PROP_PERF_200=max(self.F_T) < 3e-3,
+            PROP_PERF_210=min(self.F_T) > 0.12e-3,
+            PROP_FUN_100=max(self.P_req) < 4,
+            PROP_RAMS_200=max(self.p) < 10e5
+        )
+
+        if False in requirements.values(): 
+            print('Not all requirements met.')
+        else: 
+            print('Requirements met.')
+            
+        return requirements
 
     def __repr__(self):
         s = 'OperationalEnvelope(\n'
@@ -148,6 +162,10 @@ class Experiment:
 
         for oe in experiments:
             self.experiments[oe.name] = oe
+
+        for i, j in combinations(experiments, 2):
+            if i == j:
+                raise Exception('Equal OperationalEnvelope instances found.')
 
     def comparison(self, dt, t_end, return_fig=False):
         plt.style.use('ggplot')
@@ -187,3 +205,9 @@ class Experiment:
 
         if return_fig:
             return fig
+    
+    def verification(self, dt, t_end):
+        for oe in self.experiments.values():
+            oe.simulate(dt, t_end)
+            print(f'''OperationalEnvelope(`{oe.name}`):\n\t{repr(oe.verify())}
+            ''')
