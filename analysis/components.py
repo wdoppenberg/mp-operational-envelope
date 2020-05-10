@@ -70,6 +70,7 @@ class OperationalEnvelope:
         self.T_vap = self.prop.h_vap*self.prop.T_vap0\
             /(self.prop.T_vap0*self.prop.R_vap*np.log(self.prop.p_vap0/self.p)+self.prop.h_vap)
         self.Q = self.mdot * (self.T_c-self.T_0)*self.prop.c_l + self.prop.h*self.mdot
+        self.P_req = self.Q/self.eff_Q
         self.V_t = self.V_0 * (self.p_0 / self.p)
         self.m = (self.V_tube - self.V_t) * self.prop.rho
 
@@ -111,7 +112,7 @@ class OperationalEnvelope:
         ax[4].set_ylabel('Propellant\nmass [kg]')
         ax[4].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
 
-        ax[5].plot(self.t, self.Q/self.eff_Q)
+        ax[5].plot(self.t, self.P_req)
         ax[5].set_ylabel('Required\npower [W]')
         ax[5].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
         ax[5].set_xlabel('Time [s]')
@@ -160,27 +161,29 @@ class Experiment:
             ax[0].set_ylabel('Nitrogen\npressure [Pa]')
             ax[0].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
 
-            ax[1].plot(oe.t, oe.mdot, label=str(oe.name))
+            ax[1].plot(oe.t, oe.mdot)
             ax[1].set_ylabel('Mass\nflow [kg/s]')
             ax[1].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
 
-            ax[2].plot(oe.t, 1000*oe.F_T, label=str(oe.name))
+            ax[2].plot(oe.t, 1000*oe.F_T)
             ax[2].set_ylabel('Thrust [mN]')
             ax[2].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
 
-            ax[3].plot(oe.t, oe.T_c, label=str(oe.name))
+            ax[3].plot(oe.t, oe.T_c)
             ax[3].set_ylabel('Chamber\ntemperature [K]')
 
-            ax[4].plot(oe.t, oe.m, label=str(oe.name))
+            ax[4].plot(oe.t, oe.m)
             ax[4].set_ylabel('Propellant\nmass [kg]')
             ax[4].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
 
-            ax[5].plot(oe.t, oe.Q/oe.eff_Q, label=str(oe.name))
+            ax[5].plot(oe.t, oe.P_req)
             ax[5].set_ylabel('Required\npower [W]')
             ax[5].set_xlabel('Time [s]')
         
-        for a in ax:
-            a.legend()
-        
+        fig.legend(
+            loc = 'right',
+            bbox_transform = plt.gcf().transFigure
+        )
+
         if return_fig:
             return fig
