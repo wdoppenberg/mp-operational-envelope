@@ -9,12 +9,12 @@ class OperationalEnvelope:
     def __init__(self, params):
 
         # Thruster parameters
-        self.A_t = params['A_t'] #Nozzle throat area
+        self.A_t = 4.5e-9 # Nozzle throat area
         self.l_tube = params['l_tube'] # Propellant tubing length
         self.d_tube = params['d_tube'] # Propellant tubing diameter
         self.V_tube = (self.l_tube*np.pi*(self.d_tube**2))/4 # Propellant tubing volume
-        self.eff_Q = params['eff_Q'] # Heating efficiency 
-        self.T_0 = params['T_0']
+        self.eff_Q = 0.6 # Heating efficiency 
+        self.T_0 = 283 # Ambient temperature
         
         # Propellant properties
         self.prop = params['propellant']
@@ -22,7 +22,7 @@ class OperationalEnvelope:
         # Quality factors
         self.C_d = params['C_d'] # Discharge coefficient
         self.xi_s = params['xi_s'] # I_sp quality  
-        self.I_sp = params['I_sp']*self.xi_s # Specific impulse
+        self.I_sp = 74*self.xi_s # Specific impulse
 
         # Input parameters
         self.p_0 = params['p_0']
@@ -113,11 +113,11 @@ class OperationalEnvelope:
 
         if return_fig:
             return fig
-        
+
 
     def __repr__(self):
         s = 'OperationalEnvelope(\n'
         for k, v in vars(self).items():
-            s+=f"{k}\t\t\t{v}\n"
+            s+=f"\t{k}\t\t\t{v}\n"
         s += ')'
         return s

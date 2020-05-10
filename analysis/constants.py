@@ -9,7 +9,7 @@ class Water:
     h = 2256e3      #J/kg
     c_l = 4187      #J/K/kg liquid water
     c_v = 1996      #J/K/kg water vapour
-    gamma = 1.33    
+    gamma = 1.33
     R_constant = 461.67      #J/K/kg
     rho = 997       #kg/m^3
     p_vap0 = 1e5
