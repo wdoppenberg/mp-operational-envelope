@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from .functions import vdkh
 
 class OperationalEnvelope:
-    def __init__(self, params):
+    def __init__(self, params, name=None):
 
         # Thruster parameters
         self.A_t = 4.5e-9 # Nozzle throat area
@@ -39,6 +39,11 @@ class OperationalEnvelope:
 
         self.mdot_0 = self.p_0*self.A_t*self.prop.Gamma\
             /(np.sqrt(self.prop.R_constant*self.T_c0))*self.C_d
+
+        if name is None:
+            self.name = hash(self)
+        else:
+            self.name = name
 
     def simulate(self, dt, t_end, dim=None):
         self.t = np.arange(0, t_end, dt, dtype='f')
@@ -121,3 +126,61 @@ class OperationalEnvelope:
             s+=f"\t{k}\t\t\t{v}\n"
         s += ')'
         return s
+
+    def __hash__(self):
+        return hash((
+            self.l_tube,
+            self.d_tube,
+            self.p_0,
+            self.V_fraction,
+            self.C_d,
+            self.xi_s
+        ))
+
+    def __eq__(self, other):
+        return hash(self) == hash(other)
+
+
+class Experiment:
+    def __init__(self, *experiments):
+        self.experiments = {}
+
+        for oe in experiments:
+            self.experiments[oe.name] = oe
+
+    def comparison(self, dt, t_end, return_fig=False):
+        plt.style.use('ggplot')
+
+        fig, ax = plt.subplots(6, 1, figsize=(10,8), sharex=True)
+
+        for oe in self.experiments.values():
+            oe.simulate(dt, t_end)
+
+            ax[0].plot(oe.t, oe.p, label=str(oe.name))
+            ax[0].set_ylabel('Nitrogen\npressure [Pa]')
+            ax[0].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+
+            ax[1].plot(oe.t, oe.mdot, label=str(oe.name))
+            ax[1].set_ylabel('Mass\nflow [kg/s]')
+            ax[1].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+
+            ax[2].plot(oe.t, 1000*oe.F_T, label=str(oe.name))
+            ax[2].set_ylabel('Thrust [mN]')
+            ax[2].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+
+            ax[3].plot(oe.t, oe.T_c, label=str(oe.name))
+            ax[3].set_ylabel('Chamber\ntemperature [K]')
+
+            ax[4].plot(oe.t, oe.m, label=str(oe.name))
+            ax[4].set_ylabel('Propellant\nmass [kg]')
+            ax[4].ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+
+            ax[5].plot(oe.t, oe.Q, label=str(oe.name))
+            ax[5].set_ylabel('Required\npower [W]')
+            ax[5].set_xlabel('Time [s]')
+        
+        for a in ax:
+            a.legend()
+        
+        if return_fig:
+            return fig
