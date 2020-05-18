@@ -170,7 +170,7 @@ class Experiment:
     def comparison(self, dt, t_end, return_fig=False):
         plt.style.use('ggplot')
 
-        fig, ax = plt.subplots(6, 1, figsize=(10,8), sharex=True)
+        fig, ax = plt.subplots(6, 1, figsize=(10,10), sharex=True)
 
         for oe in self.experiments.values():
             oe.simulate(dt, t_end)
